@@ -1,11 +1,11 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from '../pages/Login';
-import Home from '../pages/Home';
+import Home from '../../pages/Home';
+import Login from '../../pages/Login';
 
 const Stack = createNativeStackNavigator();
 
-const Routes = () => {
+const MainStackNavigation = () => {
 
     let loginStatus = false;
 
@@ -16,8 +16,8 @@ const Routes = () => {
                 <Stack.Screen name="Home" component={Home} />
                 <Stack.Screen name="Login" component={Login} />
             </Stack.Navigator>
-        </NavigationContainer> 
+        </NavigationContainer>
     );
 };
 
-export default Routes;
+export default MainStackNavigation;

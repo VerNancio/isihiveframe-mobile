@@ -7,10 +7,10 @@ const Home = () => {
     return (
         <View style={styles.container}>
             <View>
-                <Text>aaaa</Text>
+                <Text>AAAAAAAAAAAAAAAAAAAAAAAAA</Text>
             </View>
             <View>
-                <ProductsList />
+                {/* <ProductsList /> */}
             </View>
         </View>
     );

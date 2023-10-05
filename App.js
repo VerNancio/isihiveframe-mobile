@@ -1,10 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import Routes from './src/routes';
-import Login from './src/pages/Login';
+import { NavigationContainer } from '@react-navigation/native';
+import MainStackNavigation from './src/routes/StackNavigation';
+// import DrawerNavigator from './src/routes/DrawerNavigation';
 
 export default function App() {
   return (
-    <Routes />
+    // <NavigationContainer>
+    //   <DrawerNavigator></DrawerNavigator>
+    // </NavigationContainer>
+    <MainStackNavigation />
   );
 }
 
