@@ -1,0 +1,10 @@
+{
+    "day": {
+        "main": "#F1F5F9",
+        "highlight": "#FFF"
+    },
+    "night":{
+        "main": "#122736",
+        "highlight": "#092030"
+    }
+}
