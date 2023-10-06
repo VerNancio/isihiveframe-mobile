@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import InputField from '../../components/InputField';
-import jsonData from '../../data/login.json'
+import jsonData from '../../data/login.json';
 
 const Login = () => {
 
@@ -31,9 +31,9 @@ const Login = () => {
                 console.log(password)
                 console.log('logado')
 
-                {navigation.navigate('Home')};
+                navigation.replace('Main');
             } else {
-                console.log('login incorreto')
+                alert('login incorreto');
             }
         }
     };

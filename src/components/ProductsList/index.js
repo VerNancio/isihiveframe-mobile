@@ -1,30 +1,42 @@
-import { View, Text, StyleSheet } from "react-native";
-import { Icon } from "react-native-vector-icons";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import jsonData from '../../data/product.json';
 
-const productList = (props) => {
+const ProductList = (props) => {
+
+    const json = jsonData;
 
     return (
-        <View>
-            <Product />
+        <View style={{gap: 4}}>
+            {json.map(data => {
+                return (<Product data={data}/>);
+            })}
         </View>
     );
 }
 
-const Product = () => {
+const Product = (props) => {
+
+    const data = props.data;
+
     return (
-        <View style={styles.container}>
-            <View>
-                <Text style={styles.icon}>A</Text>
+        <TouchableOpacity>
+            <View style={styles.container}>
+                <View style={styles.icon}>
+                    <Icon name="checkbox-multiple-outline" color="#3976D1" size={30} />
+                </View>
+                <View style={{ flexDirection: 'row', alignContent: 'space-between', justifyContent: 'space-between'}}>
+                    <View style={styles.productInfo}>
+                        <Text style={{color: '#122736', fontSize: 18, fontWeight: 600}}>{data.productName}</Text>
+                        <Text style={{color: '#7E7E7E', fontSize: 12}}>{data.productCategory}</Text>
+                    </View>
+                    <View style={styles.dateInfo}>
+                        <Text style={{color: '#122736', fontSize: 18, fontWeight: 600}}>Data</Text>
+                        <Text style={{color: '#7E7E7E', fontSize: 12}}>{data.deliveryDate}</Text>
+                    </View>
+                </View>
             </View>
-            <View style={styles.productInfo}>
-                <Text>Nome</Text>
-                <Text>Categoria</Text>
-            </View>
-            <View style={styles.dateInfo}>
-                <Text>Data</Text>
-                <Text>04/10/23</Text>
-            </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 
@@ -34,11 +46,17 @@ const styles = StyleSheet.create ({
     container: {
         flexDirection: 'row',
         backgroundColor: '#fff',
-        borderRadius: 10,
+        gap: 8,
+        borderRadius: 6,
+        paddingVertical: '4%',
+        paddingHorizontal: '4%',
     },
     icon: {
-        height: '500',
-        width: '40',
+        height: 40,
+        width: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 3,
         color: '#3976D1',
         backgroundColor: '#B0C8ED',
     },
@@ -52,4 +70,4 @@ const styles = StyleSheet.create ({
     },
 });
 
-export default productList;
+export default ProductList;

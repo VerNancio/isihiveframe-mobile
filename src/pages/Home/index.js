@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import ProductsList from '../../components/ProductsListing';
 import TabNavigator from "../../routes/TabNavigator";
 
 

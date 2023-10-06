@@ -6,7 +6,7 @@ const Products = () => {
     return (
         <View style={styles.container}>
             <View>
-                <Text>PRODUTOS</Text>
+                <Text style={{fontSize: 24, fontWeight: '600', color: '#1E293B'}}>PRODUTOS</Text>
             </View>
             <View style={styles.productsContainer}>
                 <ProductsList />
@@ -19,15 +19,16 @@ const styles = StyleSheet.create ({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        paddingTop: '12%',
+        paddingTop: '10%',
         paddingBottom: '8%',
         paddingHorizontal: '6%',
     },
     productsContainer: {
-        height: '80%',
+        height: '92%',
         width: '100%',
-        paddingVertical: '10%',
-        paddingHorizontal: '5%',
+        marginTop: 6,
+        paddingVertical: '8%',
+        paddingHorizontal: '4%',
         borderRadius: 10,
         backgroundColor: '#F1F5F9',
     }

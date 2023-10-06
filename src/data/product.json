@@ -1,8 +1,17 @@
 [
     {
-        "name": "Luvaco",
-        "category": "Instrumental",
-        "Date": "05/11/2023"
+        "productName": "Luvaco",
+        "productCategory": "Instrumental",
+        "deliveryDate": "05/11/2023"
     },
-    {}
+    {
+        "productName": "Luvaco",
+        "productCategory": "Instrumental",
+        "deliveryDate": "05/11/2023"
+    },
+    {
+        "productName": "Luvaco",
+        "productCategory": "Instrumental",
+        "deliveryDate": "05/11/2023"
+    }
 ]
