@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import ProductsList from '../../components/ProductsList';
 
 const Products = () => {
@@ -32,8 +32,6 @@ const styles = StyleSheet.create ({
         borderRadius: 10,
         backgroundColor: '#F1F5F9',
     }
-    
-
 });
 
 export default Products;

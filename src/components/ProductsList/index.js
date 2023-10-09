@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import jsonData from '../../data/product.json';
 
@@ -18,9 +19,10 @@ const ProductList = (props) => {
 const Product = (props) => {
 
     const data = props.data;
+    const navigation = useNavigation();
 
     return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={(data) => {navigation.navigate("ProductDetail", data.id)}}>
             <View style={styles.container}>
                 <View style={styles.icon}>
                     <Icon name="checkbox-multiple-outline" color="#3976D1" size={30} />

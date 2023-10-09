@@ -1,10 +1,14 @@
 [
     {
+        "name": "Jacinto Pinto Aquino",
+        "phone": "11976146999",
         "email": "vini.souza18",
         "password": "12345678"
     },
     {
-        "email": "walter.white",
+        "name": "Walter White da Silva",
+        "phone": "11976146777",
+        "email": "v18",
         "password": "69696969"
     }
 ]
