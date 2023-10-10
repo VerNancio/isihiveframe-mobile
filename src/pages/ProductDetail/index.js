@@ -93,9 +93,9 @@ const stylesField = StyleSheet.create({
     field: {
         // justifyContent: 'flex-start',
         width: '',
-        height: 60, 
+        height: 56, 
         gap: 6,
-        marginVertical: 5,
+        marginVertical: 8,
     },
     fieldName: {
         fontSize: 14,

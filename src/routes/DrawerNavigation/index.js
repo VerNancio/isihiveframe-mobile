@@ -19,7 +19,7 @@ const DrawerHeader = () => {
         headerTitle: () => {
             return (
                 <View style={{ flexDirection: "row" }}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => {navigation.navigate("Home")}}>
                         <Text style={{ fontSize: 24 }}>
                             <Text style={{ color: '#3976D1' }}>HIVE</Text>
                             <Text style={{ color: '#1E293B' }}>FRAME</Text>
