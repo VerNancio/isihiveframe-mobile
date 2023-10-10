@@ -34,18 +34,24 @@ const Account = () => {
     return (
         <ScrollView style={{ flex: 1 }}>
             <View style={styles.container}>
-                <Image style={styles.userProfilePhoto} source={require('../../assets/image/teste/asukaringa.jpg')} />
+                <TouchableOpacity>
+                    <Image style={styles.userProfilePhoto} source={require('../../assets/image/teste/asukaringa.jpg')} />
+                </TouchableOpacity>
                 <View style={{alignItems: 'center'}}>
                     <Text style={{ fontSize: 24, color: '#1E293B', fontWeight: '800'}}>Asuka_Strikes</Text>
                     <Text style={{ fontSize: 16, color: '#7E7E7E'}}>Gerente</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
                     <View style={styles.contactInfo}>
-                        <Icon color='#3976D1' name="email-outline" size={30} />
+                        <TouchableOpacity>
+                            <Icon color='#3976D1' name="email-outline" size={30} />
+                        </TouchableOpacity>
                         <Text style={{ color: '#7E7E7E' }}>doge@host.com</Text>
                     </View>
                     <View style={styles.contactInfo}>
-                        <Icon color='#3976D1' name="phone-outline" size={30} />
+                        <TouchableOpacity>
+                            <Icon color='#3976D1' name="phone-outline" size={30} />
+                        </TouchableOpacity>
                         <Text style={{ color: '#7E7E7E' }}>(11) 95555-5555</Text>
                     </View>
                 </View>

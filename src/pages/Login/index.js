@@ -40,7 +40,9 @@ const Login = () => {
 
     return(
         <View style={styles.container}>
-            <Image style={{width: 160, height: 80}} source={require('../../assets/image/LOGO-inst-tec-senai.png')} />
+            <TouchableOpacity>
+                <Image style={{height: 80, resizeMode: 'contain'}} source={require('../../assets/image/LOGO-inst-tec-senai.png')} />
+            </TouchableOpacity>
             <View>
                 <InputField styleProp={stylesField} objState={setEmail} maxLength={30} fieldName="Email" placeholder="Insira seu email" />
                 <InputField styleProp={stylesField} objState={setPassword} maxLength={20} fieldName="Senha" placeholder="Insira sua senha" />
@@ -55,7 +57,7 @@ const Login = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 50,
+        paddingTop: 80,
         alignItems: 'center',
         backgroundColor: '#F1F5F9',
         gap: 32,

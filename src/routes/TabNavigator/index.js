@@ -9,7 +9,7 @@ const TabHeader = () => {
 
     return({
         tabBarLabelStyle: { fontSize: 12 },
-        tabBarItemStyle: { width: 110 },
+        tabBarItemStyle: { width: 120 },
         tabBarStyle: { backgroundColor: '#F1F5F9' },
         tabBarActiveTintColor: '#3976D1',
         tabBarInactiveTintColor: '#1E293B',

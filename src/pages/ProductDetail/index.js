@@ -3,22 +3,45 @@ import { View, ScrollView, Text, Image, TouchableOpacity, StyleSheet } from "rea
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import InputField from "../../components/InputField";
 import StatementField from "../../components/StatementField";
+import jsonData from '../../data/product.json';
 
 const ProductDetail = ({ route }) => {
 
     const idProduct = route.params;
 
+    const jsonDetails = jsonData[0];
+
+    const [isBttnDisabled, setDisableState] = useState(false)
+
+    const trySave = () => {
+        console.log('aaa')
+    };
+
     return (
         <ScrollView style={{ flex: 1 }}>
             <View style={styles.container}>
-                <View style={{alignItems: 'center'}}>
-                    <Text style={{ fontSize: 16, color: '#092030', fontWeight: '800'}}>DETALHES DO PRODUTO</Text>
+                <View style={{}}>
+                    <Text style={{ fontSize: 20, color: '#092030', fontWeight: '700'}}>DETALHES DO PRODUTO</Text>
                     <Text style={{ fontSize: 12, color: '#7E7E7E'}}>Visualize, edite ou exclua as informações do produto.</Text>
                 </View>
                 <View style={styles.productInfoContainer}>
-                    <StatementField styleProp statementTitle statement />
+                    <StatementField styleProp={stylesField} statementTitle="NOME DO PRODUTO:" statement={jsonDetails['productName']} />
+                    <StatementField styleProp={stylesField} statementTitle="NOME DO TÉCNICO:" statement={jsonDetails['technician']} />
+                    <StatementField styleProp={stylesField} statementTitle="MÁQUINA:" statement={jsonDetails['machinery']} />
+                    <StatementField styleProp={stylesField} statementTitle="ÁREA DO SERVIÇO:" statement={jsonDetails['serviceArea']} />
+                    <StatementField styleProp={stylesField} statementTitle="CATEGORIA DO SERVIÇO:" statement={jsonDetails['serviceCategory']} />
+                    <StatementField styleProp={stylesField} statementTitle="UNIDADES:" statement={jsonDetails['unitQnt']} />
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <StatementField styleProp={stylesField} widthByPerc={'50%'} statementTitle="HORAS-PESSOA:" statement={jsonDetails['hours-person']} />
+                        <StatementField styleProp={stylesField} widthByPerc={'50%'} statementTitle="HORAS-MÁQUINA:" statement={jsonDetails['hours-mach']} />
+                    </View>
+                    <StatementField styleProp={stylesField} statementTitle="VALOR:" statement={"R$ ".concat(jsonDetails['value'])} />
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <StatementField styleProp={stylesField} widthByPerc={'50%'} statementTitle="DATA DE INÍCIO:" statement={jsonDetails['startDate']} />
+                        <StatementField styleProp={stylesField} widthByPerc={'50%'} statementTitle="DATA DE TÉRMINO:" statement={jsonDetails['deliveryDate']} />
+                    </View>
                 </View>
-                <View style={{alignItems: 'center'}}>
+                <View>
                     <Text style={{ fontSize: 16, color: '#092030', fontWeight: '800'}}>LANÇAMENTO DE HORAS TRABALHADAS</Text>
                     <Text style={{ fontSize: 12, color: '#7E7E7E'}}>Insira a quantidade de horas trabalhadas no produto.</Text>
                 </View>
@@ -34,28 +57,17 @@ const ProductDetail = ({ route }) => {
 const styles = StyleSheet.create ({
     container: {
         flex: 1,
-        alignItems: 'center',
+        // alignItems: 'center',
         backgroundColor: '#fff',
         paddingTop: '8%',
         paddingBottom: '8%',
         paddingHorizontal: '6%',
         gap: 14
     },
-    userProfilePhoto: {
-        height: 150,
-        width: 150,
-        borderRadius: 100,
-        resizeMode: 'contain',
-    },
-    contactInfo: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6
-    },
     productInfoContainer: {
         height: '90%',
         width: '100%',
-        paddingVertical: '3%',
+        paddingVertical: '5%',
         paddingHorizontal: '8%',
         borderRadius: 10,
         backgroundColor: '#F1F5F9',
@@ -80,23 +92,21 @@ const styles = StyleSheet.create ({
 const stylesField = StyleSheet.create({
     field: {
         // justifyContent: 'flex-start',
-        width: 280,
+        width: '',
         height: 60, 
         gap: 6,
-        marginVertical: 10,
+        marginVertical: 5,
     },
     fieldName: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '700',
-        alignSelf: 'flex-start',
-
+        color: '#7E7E7E',
     },
     input: {
+        fontSize: 20,
+        fontWeight: '700',
+        color: '#122736',
         width: '100%',
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderRadius: 8,
-        backgroundColor: '#fff',
     },
 });
 

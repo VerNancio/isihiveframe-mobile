@@ -1,17 +1,28 @@
 [
     {
         "productName": "Luvaco",
-        "productCategory": "Instrumental",
+        "technician": "Vasco da Gama",
+        "machinery": "Maquina",
+        "serviceArea": "Area de serviço",
+        "serviceCategory": "Categoria",
+        "unitQnt": "1",
+        "hours-person": "5",
+        "hours-mach": "23",
+        "value": "15000",
+        "startDate": "31/09/2023",
         "deliveryDate": "05/11/2023"
     },
     {
         "productName": "Luvaco",
-        "productCategory": "Instrumental",
-        "deliveryDate": "05/11/2023"
-    },
-    {
-        "productName": "Luvaco",
-        "productCategory": "Instrumental",
+        "technician": "Vasco da Gama",
+        "machinery": "Maquina",
+        "serviceArea": "Area de serviço",
+        "serviceCategory": "Categoria",
+        "unitQnt": "1",
+        "hours-person": "5",
+        "hours-mach": "23",
+        "value": "15000",
+        "startDate": "31/09/2023",
         "deliveryDate": "05/11/2023"
     }
 ]

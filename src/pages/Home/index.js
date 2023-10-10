@@ -26,7 +26,7 @@ const Produtos = () => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={{fontSize: 24, fontWeight: 800}}>{infoScreen.tittle}</Text>
+                <Text style={{fontSize: 24, fontWeight: 700}}>{infoScreen.tittle}</Text>
                 { infoScreen.info != '' ? <Text style={{fontSize: 12}}>{infoScreen.info}</Text> : <></> }
             </View>
             <TabNavigator state={setTabScreen}/>
@@ -40,8 +40,8 @@ const styles = StyleSheet.create ({
         backgroundColor: '#F1F5F9',
     },
     header: {
-        paddingTop: 5,
-        paddingBottom: 10,
+        paddingTop: 10,
+        // paddingBottom: 2,
         paddingHorizontal: '5%',
     },
     topPart: {

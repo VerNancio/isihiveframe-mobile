@@ -1,4 +1,4 @@
-import { View, Text, Drawer, Section, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Drawer, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { DrawerItem, DrawerContentScrollView, createDrawerNavigator } from "@react-navigation/drawer";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -18,17 +18,22 @@ const DrawerHeader = () => {
         headerTintColor: "#3976D1", 
         headerTitle: () => {
             return (
-                <View style={{ flexDirection: "row", marginLeft: 80 }}>
-                    <Text style={{ fontSize: 24 }}>
-                        <Text style={{ color: '#3976D1' }}>HIVE</Text>
-                        <Text style={{ color: '#1E293B' }}>FRAME</Text>
-                    </Text>
-                    <View style={{ flexDirection: 'row', gap: 5, marginLeft: 60 }}>
+                <View style={{ flexDirection: "row" }}>
+                    <TouchableOpacity>
+                        <Text style={{ fontSize: 24 }}>
+                            <Text style={{ color: '#3976D1' }}>HIVE</Text>
+                            <Text style={{ color: '#1E293B' }}>FRAME</Text>
+                        </Text>
+                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row'}}>
                         <TouchableOpacity onPress={() => navigation}>
                             <Icon color='#3976D1' name="white-balance-sunny" size={30} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigation}>
                             <Icon color='#3976D1' name="bell-outline" size={30} />
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Image style={{ height: 30, width: 30, borderRadius: 100, resizeMode: 'contain' }} source={require('../../assets/image/teste/asukaringa.jpg')}/>
                         </TouchableOpacity>
                     </View>
                 </View>

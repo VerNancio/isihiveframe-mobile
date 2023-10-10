@@ -4,7 +4,9 @@ import MainStackNavigation from './src/routes/StackNavigation/main/';
 
 export default function App() {
   return (
-    <MainStackNavigation />
+    <NavigationContainer>
+      <MainStackNavigation />
+    </NavigationContainer>
   );
 }
 
