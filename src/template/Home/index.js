@@ -1,27 +1,28 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import TabNavigator from "../../routes/TabNavigator";
 
 
-const Produtos = () => {
+const Home = () => {
 
     const [tabScreen, setTabScreen] = useState('');
     const [infoScreen, setInfoScreen] = useState({tittle: "Produtos", info: "Visualize informações de perfil e projetos ao qual faz parte"});
 
     useEffect(() => {
-        if (tabScreen == "products") { 
+        if (tabScreen == "account") { 
             setInfoScreen({
                 tittle: "Meu perfil", 
-                info: "Visualize informações de perfil e projetos ao qual faz parte"
+                info: "Visualize informações do seu perfil"
             });
         }
-        else if (tabScreen == "account") { 
+        else if (tabScreen == "products") { 
             setInfoScreen({
                 tittle: "Produtos", 
-                info: "Visualize informações de perfil e projetos ao qual faz parte"
+                info: "Visualize informações dos produtos e projetos ao qual faz parte"
             });
         }
-    }, tabScreen);
+        console.log(infoScreen)
+    }, [tabScreen]);
 
     return (
         <View style={styles.container}>
@@ -44,16 +45,6 @@ const styles = StyleSheet.create ({
         // paddingBottom: 2,
         paddingHorizontal: '5%',
     },
-    topPart: {
-        height: 300,
-        // flex: 0.3,
-        backgroundColor: 'yellow',
-    },
-    bottomPart : {
-        height: 300,
-        flex: 0.7,
-    },
-
 });
 
-export default Produtos;
+export default Home;

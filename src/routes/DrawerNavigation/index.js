@@ -2,7 +2,8 @@ import { View, Text, Drawer, Image, StyleSheet, TouchableOpacity } from "react-n
 import { useNavigation } from "@react-navigation/native";
 import { DrawerItem, DrawerContentScrollView, createDrawerNavigator } from "@react-navigation/drawer";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import Home from "../../pages/Home";
+import Home from "../../template/Home";
+import WorkManagement from "../../template/WorkManagement";
 import { useState } from "react";
 
 
@@ -68,7 +69,7 @@ const CustomDrawerContent = () => {
                         />
                     )} 
                     label={"Perfil"}
-                    onPress={() => {}}
+                    onPress={() => { navigation.navigate('Home') }}
                 />
                 <DrawerItem
                 icon={({color, size}) => (
@@ -79,7 +80,7 @@ const CustomDrawerContent = () => {
                     />
                 )} 
                 label={"Banco de horas"}
-                onPress={() => {}}
+                onPress={() => { navigation.navigate('WorkManagement') }}
             />
             </DrawerContentScrollView>
             <View style={{}}>
@@ -102,21 +103,21 @@ const CustomDrawerContent = () => {
 
 const stylesHeader = StyleSheet.create({
     headerContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingHorizontal: 16,
-      height: 100,
-      borderBottomWidth: 1,
-      borderBottomColor: '#ddd',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        height: 100,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
     },
     headerText: {
-      fontSize: 20,
-      fontWeight: 'bold',
+        fontSize: 20,
+        fontWeight: 'bold',
     },
     closeButton: {
-      fontSize: 16,
-      color: 'blue',
+        fontSize: 16,
+        color: 'blue',
     },
 });
 
@@ -128,6 +129,7 @@ const DrawerNavigator = () => {
         drawerLabel={{ focused: false, color: 'blue' }} drawerIcon={{color: 'blue', size: 40 }}
         initialRouteName="Home" drawerContent={props => <CustomDrawerContent {...props}/>}>
             <Drawer.Screen name="Home" options={DrawerHeader} component={Home} />
+            <Drawer.Screen name="WorkManagement" options={DrawerHeader} component={WorkManagement} />
         </Drawer.Navigator>
     );
 };

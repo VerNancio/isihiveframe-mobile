@@ -19,8 +19,8 @@ const TabHeader = () => {
 const TabNavigator = (props) => {
     return(
         <Tab.Navigator screenOptions={TabHeader}>
-            <Tab.Screen name="ProductsStack" component={ProductStackNavigation} options={{ tabBarLabel: 'Produtos' }} listeners={{tabPress: () => {props.state = "products"}}}/>
-            <Tab.Screen name="Account" component={Account}  options={{ tabBarLabel: 'Informações' }} listeners={{tabPress: () => {props.state = "account"}}}/>
+            <Tab.Screen name="ProductsStack" component={ProductStackNavigation} options={{ tabBarLabel: 'Produtos' }} listeners={{tabPress: () => {props.state("products")}}}/>
+            <Tab.Screen name="Account" component={Account}  options={{ tabBarLabel: 'Informações' }} listeners={{tabPress: () => {props.state("account")}}}/>
         </Tab.Navigator>
     );
 };

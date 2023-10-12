@@ -14,7 +14,38 @@ const ProductList = (props) => {
             })}
         </View>
     );
+
+    // const json = jsonData;
+    // const productsPerView = 7; // Quantidade de produtos por View
+    // const [views, setViews] = useState([[]]); // Inicializa com uma View vazia
+
+    // // Função para criar uma nova View quando necessário
+    // const createNewView = () => {
+    //     const newView = [];
+    //     setViews([...views, newView]);
+    // };
+
+    // // Preenche as Views com os produtos
+    // json.forEach((product, index) => {
+    //     const viewIndex = Math.floor(index / productsPerView);
+    //     if (!views[viewIndex]) createNewView(); // Cria uma nova View
+    //     views[viewIndex].push(product);
+    // });
+
+    // return (
+    //     <FlatList horizontal style={{ gap: 4 }}>
+    //         {views.map((viewProducts, viewIndex) => (
+    //             <View key={viewIndex} style={styles.viewContainer}>
+    //                 {viewProducts.map((product, productIndex) => (
+    //                     <Product key={productIndex} data={product} />
+    //                 ))}
+    //             </View>
+    //         ))}
+    //     </FlatList>
+    // );
 }
+
+// const ProductRow
 
 const Product = (props) => {
 
@@ -27,10 +58,10 @@ const Product = (props) => {
                 <View style={styles.icon}>
                     <Icon name="checkbox-multiple-outline" color="#3976D1" size={30} />
                 </View>
-                <View style={{ flexDirection: 'row', alignContent: 'space-between', justifyContent: 'space-between'}}>
+                <View style={{ flexDirection: 'row', alignContent: 'space-between', justifyContent: 'space-between' }}>
                     <View style={styles.productInfo}>
                         <Text style={{color: '#122736', fontSize: 18, fontWeight: 600}}>{data.productName}</Text>
-                        <Text style={{color: '#7E7E7E', fontSize: 12}}>{data.productCategory}</Text>
+                        <Text style={{color: '#7E7E7E', fontSize: 12}}>{data.serviceCategory}</Text>
                     </View>
                     <View style={styles.dateInfo}>
                         <Text style={{color: '#122736', fontSize: 18, fontWeight: 600}}>Data</Text>
