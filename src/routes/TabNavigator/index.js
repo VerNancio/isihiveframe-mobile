@@ -2,6 +2,7 @@ import { DrawerContent, createDrawerNavigator } from "@react-navigation/drawer";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ProductStackNavigation from "../StackNavigation/product";
 import Account from "../../pages/Account";
+import HoursLog from "../../pages/HoursLog";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -20,7 +21,7 @@ const TabNavigator = (props) => {
     return(
         <Tab.Navigator screenOptions={TabHeader}>
             <Tab.Screen name="ProductsStack" component={ProductStackNavigation} options={{ tabBarLabel: 'Produtos' }} listeners={{tabPress: () => {props.state("products")}}}/>
-            <Tab.Screen name="Account" component={Account}  options={{ tabBarLabel: 'Informações' }} listeners={{tabPress: () => {props.state("account")}}}/>
+            <Tab.Screen name="HoursLog" component={HoursLog}  options={{ tabBarLabel: 'Horas' }} listeners={{tabPress: () => {props.state("hourslog")}}}/>
         </Tab.Navigator>
     );
 };

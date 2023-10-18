@@ -9,10 +9,10 @@ const Home = () => {
     const [infoScreen, setInfoScreen] = useState({tittle: "Produtos", info: "Visualize informações de perfil e projetos ao qual faz parte"});
 
     useEffect(() => {
-        if (tabScreen == "account") { 
+        if (tabScreen == "hourslog") { 
             setInfoScreen({
-                tittle: "Meu perfil", 
-                info: "Visualize informações do seu perfil"
+                tittle: "Horas lançadas", 
+                info: "Visualize o hisórico de horas lançadas"
             });
         }
         else if (tabScreen == "products") { 

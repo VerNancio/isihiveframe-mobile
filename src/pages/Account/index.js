@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { View, ScrollView, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import InputField from "../../components/InputField";
 
-const Account = () => {
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import showToast from "../../assets/toast";
+
+const AccountView = () => {
 
     const currentName = '';
     const currentEmail = '';
@@ -28,7 +30,16 @@ const Account = () => {
     }, [name, email, phone]);
 
     const trySave = () => {
-        console.log('aaa')
+        const toastParams = {
+            type: 'success',
+            text1: 'Informações atualizadas com sucesso!',
+            text2: 'params.text2'
+        };
+
+        if (true) {
+            showToast(toastParams);
+            return
+        }
     };
 
     return (
@@ -138,4 +149,4 @@ const stylesField = StyleSheet.create({
     },
 });
 
-export default Account;
+export default AccountView;

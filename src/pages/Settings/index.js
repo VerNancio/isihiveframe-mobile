@@ -10,9 +10,7 @@ import showToast from "../../assets/toast";
 
 import jsonData from '../../data/product.json';
 
-const ProductDetailView = ({ route }) => {
-
-    const idProduct = route.params;
+const SettingsView = () => {
 
     const jsonDetails = jsonData[0];
 
@@ -37,7 +35,7 @@ const ProductDetailView = ({ route }) => {
             <View style={styles.container}>
                 <View style={{gap: 12}}>
                     <View>
-                        <Text style={{ fontSize: 22, color: '#092030', fontWeight: '700' }}>DETALHES DO PRODUTO</Text>
+                        <Text style={{ fontSize: 22, color: '#092030', fontWeight: '700' }}>INFORMAÇÕES</Text>
                         <Text style={{ fontSize: 13, color: '#7E7E7E'}}>Visualize, edite ou exclua as informações do produto.</Text>
                     </View>
                     <View style={styles.productInfoContainer}>
@@ -59,7 +57,7 @@ const ProductDetailView = ({ route }) => {
                 </View>
                 <View style={{gap: 12}}>
                     <View>
-                        <Text style={{ fontSize: 20, color: '#092030', fontWeight: '700'}}>LANÇAMENTO DE HORAS TRABALHADAS</Text>
+                        <Text style={{ fontSize: 20, color: '#092030', fontWeight: '700'}}>CONFIGURÇÕES DE LEMBRETE</Text>
                         <Text style={{ fontSize: 13, color: '#7E7E7E'}}>Insira a quantidade de horas trabalhadas no produto.</Text>
                     </View>
                     <View>
@@ -70,7 +68,7 @@ const ProductDetailView = ({ route }) => {
                 </View>
                 <View style={{gap: 12}}>
                     <View>
-                        <Text style={{ fontSize: 20, color: '#092030', fontWeight: '700'}}>LANÇAMENTO DE HORAS-MÁQUINA</Text>
+                        <Text style={{ fontSize: 20, color: '#092030', fontWeight: '700'}}>TEMA</Text>
                         <Text style={{ fontSize: 13, color: '#7E7E7E'}}>Insira a quantidade de horas-máquina trabalhadas no produto.</Text>
                     </View>
                     <View>
@@ -79,7 +77,7 @@ const ProductDetailView = ({ route }) => {
                         <StatementField styleProp={stylesField} statementTitle="HORAS-MÁQUINA ACUMULADAS:" statement={jsonDetails['productName']} />
                     </View>
                 </View>
-                <TouchableOpacity disabled={isBttnDisabled} onPress={trySave} 
+                <TouchableOpacity disabled={isBttnDisabled} onPress={() => trySave()} 
                 style={[styles.bttnSubmit, (isBttnDisabled ? styles.bttnSubmitDisabled : styles.bttnSubmitEnabled) ]}>
                     <Text style={{fontSize: 18, fontWeight: '700', color: 'white'}}>Salvar</Text>
                 </TouchableOpacity>
@@ -207,4 +205,4 @@ const stylesDropdown = StyleSheet.create({
     },
 });
 
-export default ProductDetailView;
+export default SettingsView;

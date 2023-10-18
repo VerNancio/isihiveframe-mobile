@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import InputField from '../../components/InputField';
 import jsonData from '../../data/login.json';
 
-const Login = () => {
+const LoginView = () => {
 
     const jsonLogin = jsonData;
     const navigation = useNavigation();
@@ -96,4 +96,4 @@ const stylesField = StyleSheet.create({
     },
 });
 
-export default Login;
+export default View;

@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-// import HoursLog from "../../pages/HoursLog";
-import Account from "../../pages/Account";
-import TabNavigator from "../../routes/TabNavigator";
+import SettingsView from "../../pages/Settings";
+// import TabNavigator from "../../routes/TabNavigator";
 
 
-const WorkManagement = () => {
+const Config = () => {
 
     const [tabScreen, setTabScreen] = useState('');
-    const [infoScreen, setInfoScreen] = useState({tittle: "Produtos", info: "Visualize informações de perfil e projetos ao qual faz parte"});
+    const [infoScreen, setInfoScreen] = useState({tittle: "Configurações", info: "Estabeleça alguma configurações no seu app"});
 
     useEffect(() => {
         if (tabScreen == "products") { 
@@ -31,8 +30,7 @@ const WorkManagement = () => {
                 <Text style={{fontSize: 24, fontWeight: 700}}>{infoScreen.tittle}</Text>
                 { infoScreen.info != '' ? <Text style={{fontSize: 12}}>{infoScreen.info}</Text> : <></> }
             </View>
-            <Account />
-            {/* <HoursLog /> */}
+            <SettingsView />
         </View>
     );
 }
@@ -49,4 +47,4 @@ const styles = StyleSheet.create ({
     },
 });
 
-export default WorkManagement;
+export default Config;
