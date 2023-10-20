@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../../../pages/Login';
-import { Foo } from '../../../pages/Teste';
 import DrawerNavigator from '../../DrawerNavigation';
 
 
