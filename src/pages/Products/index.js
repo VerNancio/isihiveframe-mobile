@@ -1,14 +1,25 @@
 import { View, Text, FlatList, StyleSheet } from "react-native";
+
+import { useTheme } from "../../context";
+import themeColors from '../../assets/styles/color/colors.json';
+
 import ProductsList from '../../components/ProductsList';
 
 const ProductsView = () => {
 
+    const { theme } = useTheme(); 
+
+    const [light, dark] = [themeColors.light, themeColors.dark];
+    const themeColor = (style) => theme === 'light' ? light[style] : dark[style];
+
+    //
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: themeColor("secondaryBg")}]}>
             <View>
-                <Text style={{fontSize: 24, fontWeight: '600', color: '#1E293B'}}>PRODUTOS</Text>
+                <Text style={{fontSize: 24, fontWeight: '600', color: themeColor("title")}}>PRODUTOS</Text>
             </View>
-            <View style={styles.productsContainer}>
+            <View style={[styles.productsContainer, {backgroundColor: themeColor("primaryBg")}]}>
                 <ProductsList />
             </View>
         </View>
@@ -18,7 +29,6 @@ const ProductsView = () => {
 const styles = StyleSheet.create ({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
         paddingTop: '10%',
         paddingBottom: '8%',
         paddingHorizontal: '6%',
@@ -30,7 +40,6 @@ const styles = StyleSheet.create ({
         paddingVertical: '8%',
         paddingHorizontal: '4%',
         borderRadius: 10,
-        backgroundColor: '#F1F5F9',
     }
 });
 

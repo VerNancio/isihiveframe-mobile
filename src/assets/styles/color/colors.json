@@ -1,10 +1,36 @@
 {
-    "day": {
-        "main": "#F1F5F9",
-        "highlight": "#FFF"
+    "light": {
+        "primary": "#3976D1",
+        "primaryDisabled": "#3976D180",
+        "secondary" : "#1E293B",
+        "primaryBg": "#F1F5F9",
+        "secondaryBg": "#FFFFFF",
+        "inputBg": "#F1F5F9",
+        "primaryHigh": "#3976D1",
+        "secondaryHigh": "#B0C8ED",
+        "detailColor": "#7E7E7E",
+        "title": "#1E293B",
+        "subTitle": "#1E293B",
+        "primaryText": "#122736",
+        "secondaryText": "#fff",
+        "highText": "#000000",
+        "grayText": "#7E7E7E"
     },
-    "night":{
-        "main": "#122736",
-        "highlight": "#092030"
+    "dark": {
+        "primary": "#3976D1",
+        "primaryDisabled": "#3976D180",
+        "secondary" : "#FFFFFF",
+        "primaryBg": "#092030",
+        "secondaryBg": "#122736",
+        "inputBg": "#092030",
+        "primaryHigh": "#3976D1",
+        "secondaryHigh": "#B0C8ED",
+        "detailColor": "#3976D180",
+        "title": "#FFFFFF",
+        "subTitle": "#FFFFFF",
+        "primaryText": "#FFFFFF",
+        "secondaryText": "#3976D1",
+        "highText": "#000000",
+        "grayText": "#7E7E7E"
     }
 }

@@ -1,16 +1,30 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+
+import { useTheme } from "../../context";
+import themeColors from '../../assets/styles/color/colors.json';
+
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
 import InputField from '../../components/InputField';
 import jsonData from '../../data/login.json';
 
 const LoginView = () => {
+
+    const { theme } = useTheme(); 
+
+    const [light, dark] = [themeColors.light, themeColors.dark];
+    const themeColor = (style) => theme === 'light' ? light[style] : dark[style];
+
+    //
 
     const jsonLogin = jsonData;
     const navigation = useNavigation();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [hidePw, setHidePw] = useState(true);
 
     const tryLogin = () => {
 
@@ -38,13 +52,30 @@ const LoginView = () => {
         }
     };
 
+
+
     return(
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: themeColor("primaryBg")}]}>
             <TouchableOpacity>
                 <Image style={{height: 80, resizeMode: 'contain'}} source={require('../../assets/image/LOGO-inst-tec-senai.png')} />
             </TouchableOpacity>
             <View>
                 <InputField styleProp={stylesField} objState={setEmail} maxLength={30} fieldName="Email" placeholder="Insira seu email" />
+                {/* <View>
+                    <TextInput  styleProp={stylesField} objState={setEmail} maxLength={30} fieldName="Email" placeholder="Insira seu email"/>
+                    <TouchableOpacity>
+                        { hidePw ? <Icon name="eye-off" size={24} color="white" /> : <Icon name="eye" size={24} color="white" />}
+                    </TouchableOpacity>
+                </View> */}
+                <View style={stylesField.fieldName}>
+                    <Text style={stylesField.fieldName}>Senha: </Text>
+                    <View style={[stylesField.input, {flexDirection: 'row'}]}>
+                        <TextInput secureTextEntry={hidePw} onChangeText={(text) => setPassword(text)} maxLength={20} placeholder={"Insira sua senha"}></TextInput>      
+                        <TouchableOpacity onPress={() => hidePw ? setHidePw(false) : setHidePw(true)}>
+                            <Icon name={hidePw ? "eye-off" : "eye"} size={24} color={themeColor("primaryHigh")} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
                 <InputField styleProp={stylesField} objState={setPassword} maxLength={20} fieldName="Senha" placeholder="Insira sua senha" />
                 <TouchableOpacity onPress={tryLogin} style={styles.bttnSubmit}>
                     <Text style={{fontSize: 18, fontWeight: '700', color: 'white'}}>Entrar</Text>
@@ -59,9 +90,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 80,
         alignItems: 'center',
-        backgroundColor: '#F1F5F9',
         gap: 32,
-        // backgroundColor: '#fff',
     },
     bttnSubmit: {
         height: 45,
@@ -85,7 +114,6 @@ const stylesField = StyleSheet.create({
         fontSize: 16,
         fontWeight: '700',
         alignSelf: 'flex-start',
-
     },
     input: {
         width: '100%',
@@ -96,4 +124,4 @@ const stylesField = StyleSheet.create({
     },
 });
 
-export default View;
+export default LoginView;

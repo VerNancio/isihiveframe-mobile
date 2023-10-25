@@ -37,7 +37,7 @@ const DropdownComponent = (props) => {
       <View style={styles.item}>
         <Text style={styles.textItem}>{item.label}</Text>
         {item.value === value && (
-          <Icon color='#3976D1' name="check" color="#3976D1" size={20} />
+          <Icon color='#3976D1' name="check" size={20} />
         )}
       </View>
     );
@@ -58,7 +58,7 @@ const DropdownComponent = (props) => {
         labelField="label"
         valueField="value"
         placeholder={ hoursWorked }
-        // value={item.value}
+        value={item => item.value}
         onChange={item => {
           setValue(item.value);
         }}

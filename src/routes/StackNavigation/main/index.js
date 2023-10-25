@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from '../../../pages/Login';
+import LoginView from '../../../pages/Login';
 import DrawerNavigator from '../../DrawerNavigation';
 
 
@@ -12,7 +12,7 @@ const MainStackNavigation = () => {
     return (
         <Stack.Navigator initialRouteName={loginStatus ? 'Main' : 'Login'} screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Main" component={DrawerNavigator} />
-            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Login" component={LoginView} />
         </Stack.Navigator>
     );
 };

@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import { View, ScrollView, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 
+import themeColors from "../../assets/styles/color/colors.json";
+import { useTheme } from '../../context'; 
+
 import InputField from "../../components/InputField";
 import StatementField from "../../components/StatementField";
 import DropdownComponent from "../../components/DropdownComponent";
+import ThemeSwitcher from "../../components/ThemeSwitcher";
+
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import showToast from "../../assets/toast";
@@ -11,6 +16,13 @@ import showToast from "../../assets/toast";
 import jsonData from '../../data/product.json';
 
 const SettingsView = () => {
+
+    const { theme } = useTheme(); 
+
+    const [light, dark] = [themeColors.light, themeColors.dark];
+    const themeColor = (style) => theme === 'light' ? light[style] : dark[style];
+
+    //
 
     const jsonDetails = jsonData[0];
 
@@ -31,56 +43,9 @@ const SettingsView = () => {
     };
 
     return (
-        <ScrollView style={{ flex: 1 }}>
-            <View style={styles.container}>
-                <View style={{gap: 12}}>
-                    <View>
-                        <Text style={{ fontSize: 22, color: '#092030', fontWeight: '700' }}>INFORMAÇÕES</Text>
-                        <Text style={{ fontSize: 13, color: '#7E7E7E'}}>Visualize, edite ou exclua as informações do produto.</Text>
-                    </View>
-                    <View style={styles.productInfoContainer}>
-                        <StatementField styleProp={stylesFieldContainer} statementTitle="NOME DO TÉCNICO:" statement={jsonDetails['technician']} />
-                        <StatementField styleProp={stylesFieldContainer} statementTitle="MÁQUINA:" statement={jsonDetails['machinery']} />
-                        <StatementField styleProp={stylesFieldContainer} statementTitle="ÁREA DO SERVIÇO:" statement={jsonDetails['serviceArea']} />
-                        <StatementField styleProp={stylesFieldContainer} statementTitle="CATEGORIA DO SERVIÇO:" statement={jsonDetails['serviceCategory']} />
-                        <StatementField styleProp={stylesFieldContainer} statementTitle="UNIDADES:" statement={jsonDetails['unitQnt']} />
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <StatementField styleProp={stylesFieldContainer} widthByPerc={'50%'} statementTitle="HORAS-PESSOA:" statement={jsonDetails['hours-person']} />
-                            <StatementField styleProp={stylesFieldContainer} widthByPerc={'50%'} statementTitle="HORAS-MÁQUINA:" statement={jsonDetails['hours-mach']} />
-                        </View>
-                        <StatementField styleProp={stylesFieldContainer} statementTitle="VALOR:" statement={"R$ ".concat(jsonDetails['value'])} />
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <StatementField styleProp={stylesFieldContainer} widthByPerc={'50%'} statementTitle="DATA DE INÍCIO:" statement={jsonDetails['startDate']} />
-                            <StatementField styleProp={stylesFieldContainer} widthByPerc={'50%'} statementTitle="DATA DE TÉRMINO:" statement={jsonDetails['deliveryDate']} />
-                        </View>
-                    </View>
-                </View>
-                <View style={{gap: 12}}>
-                    <View>
-                        <Text style={{ fontSize: 20, color: '#092030', fontWeight: '700'}}>CONFIGURÇÕES DE LEMBRETE</Text>
-                        <Text style={{ fontSize: 13, color: '#7E7E7E'}}>Insira a quantidade de horas trabalhadas no produto.</Text>
-                    </View>
-                    <View>
-                        <StatementField styleProp={stylesField} statementTitle="HORAS-PESSOA TOTAL:" statement={jsonDetails['productName']} />
-                        <DropdownComponent styleProp={stylesDropdown} statementTitle="HORAS TRABALHADAS (DIA):" statement={jsonDetails['productName']} />
-                        <StatementField styleProp={stylesField} statementTitle="HORAS-PESSOA ACUMULADAS:" statement={jsonDetails['productName']} />
-                    </View>
-                </View>
-                <View style={{gap: 12}}>
-                    <View>
-                        <Text style={{ fontSize: 20, color: '#092030', fontWeight: '700'}}>TEMA</Text>
-                        <Text style={{ fontSize: 13, color: '#7E7E7E'}}>Insira a quantidade de horas-máquina trabalhadas no produto.</Text>
-                    </View>
-                    <View>
-                        <StatementField styleProp={stylesField} statementTitle="HORAS-MÁQUINA TOTAL:" statement={jsonDetails['productName']} />
-                        <DropdownComponent styleProp={stylesDropdown} statementTitle="HORAS-MÁQUINA TRABALHADAS (DIA):" statement={jsonDetails['productName']} />
-                        <StatementField styleProp={stylesField} statementTitle="HORAS-MÁQUINA ACUMULADAS:" statement={jsonDetails['productName']} />
-                    </View>
-                </View>
-                <TouchableOpacity disabled={isBttnDisabled} onPress={() => trySave()} 
-                style={[styles.bttnSubmit, (isBttnDisabled ? styles.bttnSubmitDisabled : styles.bttnSubmitEnabled) ]}>
-                    <Text style={{fontSize: 18, fontWeight: '700', color: 'white'}}>Salvar</Text>
-                </TouchableOpacity>
+        <ScrollView style={{ flex: 1, backgroundColor: themeColor("primaryBg") }}>
+            <View style={[styles.container, {backgroundColor: themeColor("secondaryBg")}]}>
+                <ThemeSwitcher />
             </View>
         </ScrollView>
     );
@@ -88,9 +53,7 @@ const SettingsView = () => {
 
 const styles = StyleSheet.create ({
     container: {
-        flex: 1,
-        // alignItems: 'center',
-        backgroundColor: '#fff',
+        height: 600,
         paddingTop: '8%',
         paddingBottom: '8%',
         paddingHorizontal: '6%',
