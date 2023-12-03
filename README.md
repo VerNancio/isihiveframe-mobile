@@ -1,10 +1,12 @@
-"# Hive-Frame-ISI-MOB" 
-
 # RODAR VIA EXPO GO
+
+<br>
 
 ## Clonar e Executar um Projeto React Native com Expo Go
 
-Este guia fornece instruções passo a passo sobre como clonar um repositório de um aplicativo React Native e executá-lo usando o Expo Go. Certifique-se de seguir os pré-requisitos antes de iniciar.
+### Este guia fornece instruções passo a passo sobre como clonar um repositório de um aplicativo React Native e executá-lo usando o Expo Go. Certifique-se de seguir os pré-requisitos antes de iniciar.
+
+<br>
 
 ## Pré-requisitos
 
@@ -16,41 +18,62 @@ Certifique-se de ter o Node.js e o npm instalados em seu sistema. Você pode bai
 
 Instale o Expo CLI globalmente usando o seguinte comando no terminal:
 
-`Copy code
-npm install -g expo-cli`
+````bash
+    npm install -g expo-cli
+````
+
+<br>
+<br>
 
 ## Passos
 
 ### 1. Clone o Repositório
 
+````bash
+    git clone https://github.com/VerNancio/isihiveframe-mobile.git
+````
 
-`Copy code
-git clone URL_DO_REPOSITORIO`
+<br>
 
 ### 2. Navegue até o Diretório do Projeto
 
-`Copy code
-cd NOMEDOPROJETO`
+
+````bash
+    cd isihiveframe-mobile
+````
+
+<br>
 
 ### 3. Instale as Dependências
 
-`Copy code
-npm install`
+````bash
+    npm install
+````
+
+<br>
 
 ### 4. Inicie o Projeto Expo
 
-`Copy code
-expo start`
+````bash
+    expo start
+````
+
 Isso abrirá uma página no navegador com um código QR.
+
+<br>
 
 ### 5. Instale o Expo Go no Seu Dispositivo Móvel
 
 Instale o aplicativo Expo Go no seu dispositivo móvel a partir da loja de aplicativos (App Store para iOS ou Google Play Store para Android).
 
+<br>
+
 ### 6. Escaneie o Código QR
 
 Abra o aplicativo Expo Go no seu dispositivo móvel.
 Escaneie o código QR exibido na página Expo DevTools no navegador.
+
+<br>
 
 ### 7. Aproveite o Aplicativo
 
