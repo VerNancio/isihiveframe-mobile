@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { View, ScrollView, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-import { useTheme } from "../../context";
+import { useTheme } from "../../context/Theme";
 import themeColors from '../../assets/styles/color/colors.json';
 
 import InputField from "../../components/InputField";
@@ -9,11 +10,29 @@ import StatementField from "../../components/StatementField";
 import DropdownComponent from "../../components/DropdownComponent";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import showToast from "../../assets/toast";
+import LoadingLogo from "../../components/Loading";
 
-import jsonData from '../../data/product.json';
+import { differenceInDays, parse} from 'date-fns';
+import { ProductRequest } from "../../requests/products";
+import { HoursRequest } from "../../requests/hours";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserRequest } from "../../requests/user";
+import Toast from "react-native-toast-message";
+
+
+
+const ProductReq = new ProductRequest();
+const HoursReq = new HoursRequest();
+const UserReq = new UserRequest();
 
 const ProductDetailView = ({ route }) => {
+
+
+    const navigation = useNavigation();
+
+    //
+
 
     const { theme } = useTheme(); 
 
@@ -22,77 +41,305 @@ const ProductDetailView = ({ route }) => {
 
     //
 
-    const idProduct = route.params;
+    const [userNif, setUserNif] = useState(null);
+    const { productId } = route.params;
 
-    const jsonDetails = jsonData[0];
+    const [isLoading, setIsLoading] = useState(true);
 
-    const [isBttnDisabled, setDisableState] = useState(false)
+    const [productDetails, setProductDetails] = useState({})
 
-    const trySave = () => {
+    const [hoursDayPerson, setHoursDayPerson] = useState(null);
+    const [hoursDayMach, setHoursDayMach] = useState(null);
 
-        const toastParams = {
-            type: 'success',
-            text1: 'Configurações atualizadas com sucesso!',
-            text2: 'params.text2'
-        };
+    const [authToken, setAuthToken] = useState(null);
 
-        if (true) {
-            showToast(toastParams);
+    
+    useEffect(() => {
+        
+        const fetchData = async () => {
+
+            try {
+
+                // Pegando o token jwt
+                const token = await UserReq.getUserData(false, 'authToken');
+                setAuthToken(token)
+
+                await ProductReq.getProductDetailRequest(setProductDetails, productId, token);
+
+                const nif = await UserReq.getUserData(false, 'userNIF');
+                setUserNif(nif);
+
+
+                const workedHoursDay = await HoursReq.getWorkedHoursDayRequest(
+                    {
+                        setHoursDayPerson: setHoursDayPerson, 
+                        setHoursDayMach: setHoursDayMach
+                    }, 
+                    nif, productId, token);
+
+                // alert('sjsj')
+                // console.log(workedHoursDay)
+                // setHoursDayPerson(hoursDay);
+                // setHoursDayMach(hoursMach);
+
+                setIsLoading(false);
+            }
+            catch (err) {
+
+                console.log('errooooo: ', err)
+
+                Toast.show({
+                    type: 'error',
+                    props: { 
+                        title: 'Falha ao puxar dados do produto',
+                        style: { marginTop: 300 }
+                    }
+                });
+
+                navigation.goBack();
+            }
+
+            
+        }
+
+        
+        fetchData();
+    }, []);
+
+
+
+    // Formato da string de data (yyyy/MM/dd)
+    const dateFormat = 'yyyy-MM-dd';
+    const parsedDate = parse(productDetails['DataFinal'], dateFormat, new Date());
+
+    // Dias úteis
+    const workingDays = differenceInDays(parsedDate, new Date())
+
+                        
+    //
+
+    const [hoursPerson, setHoursPerson] = useState(0);
+    const [hoursMach, setHoursMach] = useState(0);
+
+
+    const postWorkedHours = async () => {
+
+        if (hoursPerson == 0 && hoursMach == 0) {
+
+            Toast.show({
+                type: 'warning',
+                props: { 
+                    title: 'Mínimo de uma hora trabalhada para salvar',
+                    style: { marginTop: 300 }
+                }
+            });
+
             return
+        }
+
+        try {
+
+            setIsLoading(true);
+
+            const res = await HoursReq.postHoursRequest(hoursPerson, hoursMach, productId, userNif, authToken);
+
+
+            if (res.mensagem == 'Horas lançadas com sucesso') {
+
+                Toast.show({
+                    type: 'success',
+                    props: { 
+                        // text: 'Horas salvas com sucesso!',
+                        title: res.mensagem,
+                        style: { marginTop: 300 }
+                    }
+                });
+
+                setIsLoading(false);
+
+                navigation.navigate('Products');
+                
+            } 
+            else {
+
+                alert('ssjsj')
+
+                Toast.show({
+                    type: 'warning',
+                    props: { 
+                        // text: 'Horas salvas com sucesso!',
+                        title: res.mensagem,
+                        style: { marginTop: 300 }
+                    }
+                });
+
+                setIsLoading(false);
+
+            }
+            
+        }
+        catch (err) {
+
+            console.log('erro: ', err)
+
+            Toast.show({
+                type: 'error',
+                props: { 
+                    title: 'Erro ao salvar horas trabalhadas',
+                    style: { marginTop: 300 }
+                }
+            });
+
+            setIsLoading(false);
+
+        }
+    };
+
+
+    //
+
+    const concludeProduct = async () => {
+
+
+        if (productDetails['HorasPessoa'] == 0 && productDetails['HorasMaquina'] == 0) {
+
+            Toast.show({
+                type: 'warning',
+                props: { 
+                    title: 'Não foi trabalhado o mínimo de necessárias (1 hora)',
+                    style: { marginTop: 300 }
+                }
+            });
+
+            return
+        }
+
+        try {
+
+            const res = await ProductReq.concludeProductRequest(productId, authToken);
+            console.log(res)
+
+
+            if (res.status === 'success') {
+
+                Toast.show({
+                    type: 'success',
+                    props: { 
+                        title: 'Produto concluído com sucesso!',
+                        style: { marginTop: 300 }
+                    }
+                });
+    
+            } 
+            else if (res.status === 'error') {
+
+                Toast.show({
+                    type: 'error',
+                    props: { 
+                        title: res.mensagem,
+                        style: { marginTop: 300 }
+                    }
+                });
+            }
+
+            navigation.navigate('Products');
+
+        }
+        catch (err){
+
+            Toast.show({
+                type: 'error',
+                props: { 
+                    title: 'Erro ao concluir produto',
+                    style: { marginTop: 300 }
+                }
+            });
         }
     };
 
     return (
+        
+        isLoading
+
+        ?
+
+        <View style={{ flex: 1, justifyContent: 'center', backgroundColor: themeColor("secondaryBg") }}>
+            <LoadingLogo width={80} height={80} isLoading={true} blockView={false} style={{ position: 'relative' }}/>
+        </View>
+        
+        :
+        
         <ScrollView style={{ flex: 1 }}>
             <View style={[styles().container, {backgroundColor: themeColor("secondaryBg")}]}>
                 <View style={{gap: 12}}>
                     <View>
                         <Text style={{ fontSize: 22, color: themeColor("title"), fontWeight: '700' }}>DETALHES DO PRODUTO</Text>
-                        <Text style={{ fontSize: 13, color: themeColor("grayText")}}>Visualize, edite ou exclua as informações do produto.</Text>
+                        <Text style={{ fontSize: 13, color: themeColor("grayText")}}>Visualize as informações do produto</Text>
                     </View>
                     <View style={[styles().productInfoContainer, {backgroundColor: themeColor("primaryBg")}]}>
-                        <StatementField styleProp={stylesFieldContainer()} statementTitle="NOME DO TÉCNICO:" statement={jsonDetails['technician']} />
-                        <StatementField styleProp={stylesFieldContainer()} statementTitle="MÁQUINA:" statement={jsonDetails['machinery']} />
-                        <StatementField styleProp={stylesFieldContainer()} statementTitle="ÁREA DO SERVIÇO:" statement={jsonDetails['serviceArea']} />
-                        <StatementField styleProp={stylesFieldContainer()} statementTitle="CATEGORIA DO SERVIÇO:" statement={jsonDetails['serviceCategory']} />
-                        <StatementField styleProp={stylesFieldContainer()} statementTitle="UNIDADES:" statement={jsonDetails['unitQnt']} />
+                        <StatementField styleProp={stylesFieldContainer()} statementTitle="NOME DO PRODUTO:" statement={productDetails['NomeProduto']} />
+                        <StatementField styleProp={stylesFieldContainer()} statementTitle="NOME DO TÉCNICO:" statement={productDetails['Nome']} />
+                        <StatementField styleProp={stylesFieldContainer()} statementTitle="MÁQUINA:" statement={productDetails['Maquina']} />
+                        <StatementField styleProp={stylesFieldContainer()} statementTitle="ÁREA DO SERVIÇO:" statement={productDetails['Area']} />
+                        <StatementField styleProp={stylesFieldContainer()} statementTitle="CATEGORIA DO SERVIÇO:" statement={productDetails['ServicoCategoria']} />
+                        <StatementField styleProp={stylesFieldContainer()} statementTitle="STATUS:" statement={productDetails['Situacao']} />
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <StatementField styleProp={stylesFieldContainer()} widthByPerc={'50%'} statementTitle="HORAS-PESSOA:" statement={jsonDetails['hours-person']} />
-                            <StatementField styleProp={stylesFieldContainer()} widthByPerc={'50%'} statementTitle="HORAS-MÁQUINA:" statement={jsonDetails['hours-mach']} />
+                            <StatementField styleProp={stylesFieldContainer()} widthByPerc={'50%'} statementTitle="HORAS-PESSOA:" statement={productDetails['HoraPessoa']} />
+                            <StatementField styleProp={stylesFieldContainer()} widthByPerc={'50%'} statementTitle="HORAS-MÁQUINA:" statement={productDetails['HoraMaquina']} />
                         </View>
-                        <StatementField styleProp={stylesFieldContainer()} statementTitle="VALOR:" statement={"R$ ".concat(jsonDetails['value'])} />
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <StatementField styleProp={stylesFieldContainer()} widthByPerc={'50%'} statementTitle="DATA DE INÍCIO:" statement={jsonDetails['startDate']} />
-                            <StatementField styleProp={stylesFieldContainer()} widthByPerc={'50%'} statementTitle="DATA DE TÉRMINO:" statement={jsonDetails['deliveryDate']} />
+                            <StatementField styleProp={stylesFieldContainer()} widthByPerc={'50%'} statementTitle="DATA DE INÍCIO:" statement={productDetails['DataInicial']} />
+                            <StatementField styleProp={stylesFieldContainer()} widthByPerc={'50%'} statementTitle="DATA DE TÉRMINO:" statement={productDetails['DataFinal']} />
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <StatementField styleProp={stylesFieldContainer()} widthByPerc={'50%'} statementTitle="DIAS ÚTEIS" statement={`${workingDays * (workingDays < 0 ? 0 : 1)} d`} />
+                            <StatementField styleProp={stylesFieldContainer()} widthByPerc={'50%'} statementTitle="VALOR:" statement={"R$ ".concat(productDetails['Valor'])} />
                         </View>
                     </View>
                 </View>
-                <View style={{gap: 12}}>
+                <View style={{gap: 10}}>
                     <View>
                         <Text style={{ fontSize: 20, color: themeColor("title"), fontWeight: '700'}}>LANÇAMENTO DE HORAS TRABALHADAS</Text>
-                        <Text style={{ fontSize: 13, color: '#7E7E7E'}}>Insira a quantidade de horas trabalhadas no produto.</Text>
+                        <Text style={{ fontSize: 13, color: '#7E7E7E'}}>Insira a quantidade de horas trabalhadas no produto</Text>
                     </View>
                     <View>
-                        <StatementField styleProp={stylesField()} statementTitle="HORAS-PESSOA TOTAL:" statement={jsonDetails['productName']} />
-                        <DropdownComponent styleProp={stylesDropdown()} statementTitle="HORAS TRABALHADAS (DIA):" statement={jsonDetails['productName']} />
-                        <StatementField styleProp={stylesField()} statementTitle="HORAS-PESSOA ACUMULADAS:" statement={jsonDetails['productName']} />
+                        <DropdownComponent setState={setHoursPerson} statementTitle="LANÇAR HORAS-PESSOA TRABALHADAS:" statement={productDetails['productName']} />
+                        <StatementField styleProp={stylesField()} statementTitle="HORAS-PESSOA ACUMULADAS (DIA):" statement={hoursDayPerson} />
+                        <StatementField styleProp={stylesField()} statementTitle="HORAS-PESSOA TOTAL:" statement={productDetails['HorasPessoa']} />
                     </View>
                 </View>
-                <View style={{gap: 12}}>
+                <View style={{gap: 10}}>
                     <View>
                         <Text style={{ fontSize: 20, color: themeColor("title"), fontWeight: '700'}}>LANÇAMENTO DE HORAS-MÁQUINA</Text>
-                        <Text style={{ fontSize: 13, color: '#7E7E7E'}}>Insira a quantidade de horas-máquina trabalhadas no produto.</Text>
+                        <Text style={{ fontSize: 13, color: '#7E7E7E'}}>Insira a quantidade de horas-máquina trabalhadas no produto</Text>
                     </View>
                     <View>
-                        <StatementField styleProp={stylesField()} statementTitle="HORAS-MÁQUINA TOTAL:" statement={jsonDetails['productName']} />
-                        <DropdownComponent styleProp={stylesDropdown()} statementTitle="HORAS-MÁQUINA TRABALHADAS (DIA):" statement={jsonDetails['productName']} />
-                        <StatementField styleProp={stylesField()} statementTitle="HORAS-MÁQUINA ACUMULADAS:" statement={jsonDetails['productName']} />
+                        <DropdownComponent setState={setHoursMach} statementTitle="LANÇAR HORAS-MÁQUINA TRABALHADAS:" statement={productDetails['productName']} />
+                        <StatementField styleProp={stylesField()} statementTitle="HORAS-MÁQUINA ACUMULADAS (DIA):" statement={hoursDayMach} />
+                        <StatementField styleProp={stylesField()} statementTitle="HORAS-MÁQUINA TOTAL:" statement={productDetails['HorasMaquina']} />
                     </View>
                 </View>
-                <TouchableOpacity disabled={isBttnDisabled} onPress={trySave} 
-                style={[styles().bttnSubmit, (isBttnDisabled ? styles.bttnSubmitDisabled : styles.bttnSubmitEnabled) ]}>
-                    <Text style={{fontSize: 18, fontWeight: '700', color: 'white'}}>Salvar</Text>
-                </TouchableOpacity>
+                <View>
+                    <TouchableOpacity onPress={() => postWorkedHours()} 
+                    style={[styles().bttnSubmit, 
+                    (hoursPerson != 0 || hoursMach != 0 ? 
+                    {backgroundColor: themeColor('primary')} 
+                    : 
+                    {backgroundColor: themeColor('primaryDisabled')}
+                    )]}>
+                        <Text style={{fontSize: 18, fontWeight: '700', color: 'white'}}>Salvar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => concludeProduct()} 
+                    style={[styles().bttnSubmit, 
+                    (
+                    productDetails['HorasPessoa'] != 0 || productDetails['HorasMaquina'] != 0 ? 
+                    {backgroundColor: themeColor('successColor')} 
+                    : 
+                    {backgroundColor: `${themeColor('successColor')}80`}
+                    )]}>
+                        <Text style={{fontSize: 18, fontWeight: '700', color: 'white'}}>Finalizar produto</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </ScrollView>
     );
@@ -111,7 +358,7 @@ const styles = () => {
             paddingTop: '8%',
             paddingBottom: '8%',
             paddingHorizontal: '6%',
-            gap: 22
+            gap: 32
         },
         productInfoContainer: {
             width: '100%',
@@ -120,19 +367,18 @@ const styles = () => {
             borderRadius: 10,
         },
         bttnSubmit: {
-            height: 45,
+            height: 54,
             width: '100%',
-            marginTop: 18,
+            marginTop: 20,
             borderRadius: 8,
-            backgroundColor: '#3976D1',
             justifyContent: 'center',
             alignItems: 'center',
         },
         bttnSubmitEnabled: {
-            backgroundColor: '#3976D1',
+            backgroundColor: themeColor('primary'),
         }, 
         bttnSubmitDisabled: {
-            backgroundColor: '#3976D180',
+            backgroundColor: themeColor('primaryDisabled'),
         }
     });
 }
@@ -148,9 +394,8 @@ const stylesFieldContainer = () => {
     return StyleSheet.create({
         
         field: {
-            // justifyContent: 'flex-start',
-            width: '',
-            height: 56, 
+            // width: '',
+            // height: 56, 
             gap: 6,
             marginVertical: 8,
         },
@@ -178,7 +423,6 @@ const stylesField = () => {
     return StyleSheet.create({
         field: {
             gap: 6,
-            // marginVertical: 8,
             marginTop: 14,
         },
         fieldName: {
@@ -195,59 +439,11 @@ const stylesField = () => {
             paddingHorizontal: '5%',
             borderRadius: 8,
             fontSize: 20,
-            // fontWeight: '300',
             color: themeColor("primaryText"),
             backgroundColor: themeColor("inputBg"),
         },
     });
 }
 
-
-const stylesDropdown = () => {
-
-    const { theme } = useTheme(); 
-
-    const [light, dark] = [themeColors.light, themeColors.dark];
-    const themeColor = (style) => theme === 'light' ? light[style] : dark[style];
-    
-    return StyleSheet.create({
-        field: {
-            gap: 6,
-            marginTop: 14,
-        },
-        fieldName: {
-            fontSize: 16,
-            fontWeight: '700',
-            color: themeColor("primaryText"),
-        },
-        dropdown: {
-            paddingVertical: 14,
-            paddingHorizontal: '5%',
-            backgroundColor: themeColor("inputBg"),
-            borderRadius: 8,
-        },
-        item: {
-            padding: 17,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-        },
-        textItem: {
-            flex: 1,
-            fontSize: 16,
-            color: themeColor("primaryText"),
-        },
-        placeholderStyle: {
-            backgroundColor: themeColor("inputBg"),
-            borderRadius: 8,
-            color: themeColor("primaryText"),
-        },
-        selectedTextStyle: {
-            backgroundColor: themeColor("inputBg"),
-            borderRadius: 8,
-            color: themeColor("primaryText"),
-        },
-    });
-}
 
 export default ProductDetailView;

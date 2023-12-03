@@ -1,65 +1,83 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { DrawerItem, DrawerContentScrollView, createDrawerNavigator } from "@react-navigation/drawer";
 
 import themeColors from "../../assets/styles/color/colors.json";
-import { useTheme } from '../../context'; 
+import { useTheme } from '../../context/Theme'; 
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
+import LogoSvg from "../../assets/image/logo.svg";
 
 import HomeTemplate from "../../template/HomeTemplate";
 import ProfileTemplate from "../../template/ProfileTemplate";
 import ConfigTemplate from "../../template/ConfigTemplate";
 
+import { ProfilePic } from "../../components/ProfilePic";
+import ReminderList from "../../components/ReminderList";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import { UserRequest } from "../../requests/user";
 
 // 
 
 
+const UserReq = new UserRequest();
+
 const DrawerHeader = () => {
 
     const navigation = useNavigation();
+    const route = useRoute();
+
+    //
+
     const { theme } = useTheme(); 
 
     const [light, dark] = [themeColors.light, themeColors.dark]
     const themeColor = (style) => theme === 'light' ? light[style] : dark[style]
 
+    //
+
+    const returnToHome = () => navigation.navigate("Home");
+    
+
     return (
         {
         headerStyle: {
-        backgroundColor: themeColor('primaryBg'), 
+            backgroundColor: themeColor('primaryBg'), 
         },
         headerTintColor: themeColor('primary'), 
         headerTitle: () => {
             return (
-                <View style={{ marginLeft: (Dimensions.get('window').width)/100 * 2, width: (Dimensions.get('window').width)/100 * 74 }}>
-                    <View style={{ flexDirection: "row", justifyContent: 'space-between', alignItems: 'center', alignContent: 'space-between' }}>
-                        <TouchableOpacity onPress={() => {navigation.navigate("Home")}}>
-                            <Text style={{ fontSize: 25, fontWeight: '700' }}>
+                <View style={{ width: (Dimensions.get('window').width)/100 * 76 }}>
+                    <View style={{ flexDirection: "row", justifyContent: 'space-between' }}>
+                        <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 4 }} onPress={() => returnToHome()}>
+                        <LogoSvg width={40} height={40} />
+                        <Text style={{ fontSize: 28, fontWeight: '700', marginBottom: '1.5%' }}>
                                 <Text style={{ color: themeColor('primary') }}>HIVE</Text>
                                 <Text style={{ color: themeColor('secondary') }}>FRAME</Text>
                             </Text>
                         </TouchableOpacity>
+                        { /* 
                         <View style={{ flexDirection: 'row'}}>
                             <TouchableOpacity onPress={() => navigation}>
                                 <Icon color={themeColor('primary')} name="bell-outline" size={30} />
                             </TouchableOpacity>
-                        </View>
+                        </View> 
+                        */ }
                     </View>
                 </View>
                 
               );
         }, 
-        headerTitleStyle: {
-        fontWeight: "bold",
-        fontSize: 20,
-        },}
+    }
     );
 };
 
 const CustomDrawerContent = () => {
 
-    const navigation = useNavigation();
     const { theme } = useTheme(); 
 
     const [light, dark] = [themeColors.light, themeColors.dark];
@@ -67,63 +85,129 @@ const CustomDrawerContent = () => {
 
     const drawerItemColor = theme === 'light' ? themeColor("grayText") : themeColor("primary");
 
+
+    //
+
+    const navigation = useNavigation();
+
+    const scrollViewRef = useRef(null);
+
+
+    //
+
+
+    const [userName, setUserName] = useState(null);
+    const [userEmail, setUserEmail] = useState(null);
+    const [userNIF, setUserNIF] = useState(null);
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+
+            // User name e formatação
+            const name = await UserReq.getUserData(false, 'userName')
+
+            const splitedName = name.split(' ');
+            setUserName(`${splitedName[0]} ${splitedName[1][0]}.`);
+
+            // NIF e email
+
+            UserReq.getUserData(setUserEmail, 'userEmail');
+            UserReq.getUserData(setUserNIF, 'userNIF');
+            UserReq.getProfilePicRequest(userNIF);
+        }
+        
+        fetchData();
+    }, []);
+
+
+    //
+
+    // const goToHome = () => {
+
+    //     navigation
+
+    //     navigation.navigate("Home");
+    // }
+
+
     return (
         <View style={{flex: 1}}>
-            <DrawerContentScrollView style={{backgroundColor: themeColor("primaryBg")}}>
-                <View>
-                    <TouchableOpacity onPress={() => { navigation.navigate('Profile') }}>
-                        <Image style={{height: 80, resizeMode: 'contain'}} source={require('../../assets/image/LOGO-inst-tec-senai.png')} />
+            <DrawerContentScrollView ref={scrollViewRef} style={{backgroundColor: themeColor("primaryBg")}}>
+
+                <View style={stylesHeader.headerContainer}>
+                    <TouchableOpacity style={stylesHeader.headerLogo} onPress={() => {navigation.navigate("Home")}}>
+                        <LogoSvg width={48} height={48} />
+                        <Text style={{ fontSize: 28, fontWeight: '700', marginBottom: '0.5%' }}>
+                            <Text style={{ color: themeColor('primary') }}>HIVE</Text>
+                            <Text style={{ color: themeColor('secondary') }}>FRAME</Text>
+                        </Text>
                     </TouchableOpacity>
                 </View>
-                <View style={styles.userContent}>
-                    <TouchableOpacity onPress={() => { navigation.navigate('Profile') }}>
-                        <Image style={styles.userProfilePhoto} source={require('../../assets/image/teste/asukaringa.jpg')} />
-                    </TouchableOpacity>
-                    <View style={{alignItems: 'center'}}>
+
+
+                <View style={styles().menuContent}>
+
+                    <View style={styles().navSection}>
                         <TouchableOpacity onPress={() => { navigation.navigate('Profile') }}>
-                            <Text style={{ fontSize: 20, color: themeColor("primaryText"), fontWeight: '800'}}>Asuka_Strikes</Text>
-                            <Text style={{ fontSize: 13, color: themeColor("grayText")}}>venan07@gmail.com</Text>
+                            <View style={styles().userContent}>
+                                <View>
+                                    <ProfilePic static={true} style={styles().userProfilePhoto} />
+                                </View>
+                                <View style={{alignItems: 'center'}}>
+                                    <Text style={{ fontSize: 20, color: themeColor("primaryText"), fontWeight: '800'}}>{userName}</Text>
+                                    <Text style={{ fontSize: 13, color: themeColor("grayText")}}>{userEmail}</Text>
+                                </View>
+                            </View>
                         </TouchableOpacity>
                     </View>
+
+                    <View style={styles().navSection}>
+                    
+                        <DrawerItem
+                        icon={({size}) => (
+                            <Icon 
+                            name="home"
+                            color={drawerItemColor}
+                            size={size}
+                            />
+                        )} 
+                        label={"Home"}
+                        labelStyle={{color: drawerItemColor}}
+                        onPress={() => { navigation.navigate('Home') }}
+                        />
+                        <DrawerItem
+                        icon={({size}) => (
+                            <Icon 
+                            name="account-circle"
+                            color={drawerItemColor}
+                            size={size}
+                            />
+                        )} 
+                        label={"Perfil"}
+                        labelStyle={{color: drawerItemColor}}
+                        onPress={() => { navigation.navigate('Profile') }}
+                        />
+                        <DrawerItem
+                        icon={({size}) => (
+                            <Icon 
+                            name="cog"
+                            color={drawerItemColor}
+                            size={size}
+                            />
+                        )} 
+                        label={"Config"}
+                        labelStyle={{color: drawerItemColor}}
+                        onPress={() => { navigation.navigate('Config') }}
+                        />
+                    </View>
+
+                    <ReminderList scrollRef={scrollViewRef}/>
+
                 </View>
-                <DrawerItem
-                icon={({size}) => (
-                    <Icon 
-                    name="home"
-                    color={drawerItemColor}
-                    size={size}
-                    />
-                )} 
-                label={"Home"}
-                labelStyle={{color: drawerItemColor}}
-                onPress={() => { navigation.navigate('Home') }}
-                />
-                <DrawerItem
-                icon={({size}) => (
-                    <Icon 
-                    name="account-circle"
-                    color={drawerItemColor}
-                    size={size}
-                    />
-                )} 
-                label={"Perfil"}
-                labelStyle={{color: drawerItemColor}}
-                onPress={() => { navigation.navigate('Profile') }}
-                />
-                <DrawerItem
-                icon={({size}) => (
-                    <Icon 
-                    name="cog"
-                    color={drawerItemColor}
-                    size={size}
-                    />
-                )} 
-                label={"Configurações"}
-                labelStyle={{color: drawerItemColor}}
-                onPress={() => { navigation.navigate('Config') }}
-                />
             </DrawerContentScrollView>
-            <View style={{backgroundColor: themeColor("primaryBg")}}>
+
+            <View style={[styles().exitSection, {backgroundColor: themeColor("primaryBg")}]}>
                 <DrawerItem 
                     icon={({size}) => (
                         <Icon 
@@ -132,9 +216,12 @@ const CustomDrawerContent = () => {
                         size={size}
                         />
                     )} 
-                    label={"Sign out"}
+                    label={"Sair da conta"}
                     labelStyle={{color: drawerItemColor}}
-                    onPress={() => {navigation.replace('Login')}}
+                    onPress={ async () => {
+                        await AsyncStorage.clear();
+                        navigation.replace('Login')
+                    }}
                 />
             </View>
         </View>
@@ -143,11 +230,16 @@ const CustomDrawerContent = () => {
 
 const stylesHeader = StyleSheet.create({
     headerContainer: {
+        justifyContent: 'center',
+        paddingVertical: '4%',
+        paddingHorizontal: '8%',
+        marginBottom: '8%'
+    },
+    headerLogo: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 16,
-        height: 100,
+        gap: 8,
     },
     headerText: {
         fontSize: 20,
@@ -159,20 +251,61 @@ const stylesHeader = StyleSheet.create({
     },
 });
 
-const styles = StyleSheet.create({
-    userContent: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: '8%',
-        gap: 10,
-    },
-    userProfilePhoto: {
-        height: 50,
-        width: 50,
-        borderRadius: 100,
-        resizeMode: 'contain',
-    },
-});
+const styles = () => {
+
+    const { theme } = useTheme(); 
+
+    const [light, dark] = [themeColors.light, themeColors.dark];
+    const themeColor = (style) => theme === 'light' ? light[style] : dark[style];
+
+
+    //
+    
+    return StyleSheet.create({
+        menuContent: {
+            paddingHorizontal: '8%',
+            gap: 6,
+        },
+        navSection: {
+            justifyContent: 'center',
+            gap: 4,
+            paddingVertical: '6%',
+            paddingHorizontal: '8%',
+            borderRadius: 15,
+            backgroundColor: themeColor('secondaryBg'),
+            
+        },
+        upperPart: {
+            gap: 0
+        },
+        userContent: {
+            flexDirection: 'row',
+            gap: 10,
+
+            backgroundColor: themeColor('secondaryBg'),
+            borderRadius: 15,
+        },
+        userProfilePhoto: {
+            height: 46,
+            width: 46,
+            borderRadius: 100,
+            resizeMode: 'contain',
+        },
+        exitSection: {
+            paddingBottom: '3%',
+            paddingHorizontal: '8%'
+        },
+    });
+}
+
+const Aa = () => {
+
+    return (
+        <View>
+            <Text>sjjsj</Text>
+        </View>
+    )
+}
 
 const DrawerNavigator = () => {
     const Drawer = createDrawerNavigator();

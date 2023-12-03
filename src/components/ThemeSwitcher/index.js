@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Switch } from 'react-native';
 
-import { useTheme } from '../../context'; 
+import { useTheme } from '../../context/Theme'; 
 import themeColors from '../../assets/styles/color/colors.json';
 
 
@@ -16,14 +16,19 @@ const ThemeSwitcher = () => {
   //
 
   return (
-    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-        <Text style={{color: themeColor("primaryText")}}>Dark mode:</Text>
-        <Switch
-        trackColor={{ false: "#767577", true: "#81b0ff" }}
-        thumbColor={"#f4f3f4"}
-        onValueChange={toggleTheme}
-        value={theme === 'dark'}
-        />
+    <View style={{ 
+        flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+        paddingVertical: '5%', paddingHorizontal: '10%'
+
+    }}>
+      <Text style={{ color: themeColor("primaryText"), fontSize: 24, fontWeight: 600 }}>Dark mode:</Text>
+      <Switch
+      trackColor={{ false: themeColor('grayText'), true: themeColor('primary') }}
+      thumbColor={"#f4f3f4"}
+      onValueChange={toggleTheme}
+      value={theme === 'dark'}
+      style={{ transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }] }}
+      />
     </View>
   );
 };

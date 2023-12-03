@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import themeColors from "../../assets/styles/color/colors.json";
-import { useTheme } from "../../context";
+import { useTheme } from "../../context/Theme";
 
 import TabNavigator from "../../routes/TabNavigator";
 
@@ -15,19 +15,19 @@ const HomeTemplate = () => {
     const themeColor = (style) => theme === 'light' ? light[style] : dark[style];
 
     const [tabScreen, setTabScreen] = useState('');
-    const [infoScreen, setInfoScreen] = useState({tittle: "Produtos", info: "Visualize informações de projetos e produtos ao qual faz parte"});
+    const [infoScreen, setInfoScreen] = useState({title: "Produtos", info: "Visualize informações dos produtos encarregados a você"});
 
     useEffect(() => {
         if (tabScreen == "hourslog") { 
             setInfoScreen({
-                tittle: "Horas lançadas", 
-                info: "Visualize o hisórico de horas lançadas"
+                title: "Horas lançadas", 
+                info: "Visualize o histórico dos últimos cem lançamentos de horas"
             });
         }
         else if (tabScreen == "products") { 
             setInfoScreen({
-                tittle: "Produtos", 
-                info: "Visualize informações dos produtos e projetos ao qual faz parte"
+                title: "Produtos", 
+                info: "Visualize informações dos produtos encarregados a você"
             });
         }
         console.log(infoScreen)
@@ -36,7 +36,7 @@ const HomeTemplate = () => {
     return (
         <View style={styles.container}>
             <View style={[styles.header, {backgroundColor: themeColor("primaryBg")}]}>
-                <Text style={{fontSize: 24, fontWeight: 700, color: themeColor("title")}}>{infoScreen.tittle}</Text>
+                <Text style={{fontSize: 24, fontWeight: 700, color: themeColor("title")}}>{infoScreen.title}</Text>
                 { infoScreen.info != '' ? <Text style={{fontSize: 12, color: themeColor("subTitle")}}>{infoScreen.info}</Text> : <></> }
             </View>
             <TabNavigator state={setTabScreen}/>

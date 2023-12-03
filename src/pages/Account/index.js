@@ -1,13 +1,28 @@
 import { useEffect, useState } from "react";
 import { View, ScrollView, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 
-import { useTheme } from "../../context";
+import { useTheme } from "../../context/Theme";
 import themeColors from '../../assets/styles/color/colors.json';
+import Toast from "react-native-toast-message";
 
 import InputField from "../../components/InputField";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import showToast from "../../assets/toast";
+
+import ProfilePic from "../../components/ProfilePic";
+
+import LoadingLogo from "../../components/Loading";
+
+import { UserRequest } from "../../requests/user";
+import { HoursRequest } from "../../requests/hours";
+import StatementField from "../../components/StatementField";
+
+//
+
+
+const UserReq = new UserRequest();
+const HoursReq = new HoursRequest();
 
 const AccountView = () => {
 
@@ -18,78 +33,139 @@ const AccountView = () => {
 
     //
 
-    const currentName = '';
-    const currentEmail = '';
-    const currentPhone = '';
 
-    const [name, setName] = useState(currentName);
-    const [email, setEmail] = useState(currentEmail);
-    const [phone, setPhone] = useState(currentPhone);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const [isBttnDisabled, setDisableState] = useState(false);
 
+    const [userName, setUserName] = useState(null);
+    const [userEmail, setUserEmail] = useState(null);
+    const [userNIF, setuserNIF] = useState(null);
+    
+    const [hoursPersonPosted, setHoursPersonPosted] = useState(null);
+    const [hoursMachPosted, setHoursMachPosted] = useState(null);
+
+
+
+    // Ao renderizar...
     useEffect(() => {
-        if (name != currentName || email != currentEmail || phone != currentPhone) {
-            setDisableState(false);
-            return;
+
+        const fetchData = async () => {
+
+            try {
+
+                // Pegando o token jwt
+                const token = await UserReq.getUserData(false, 'authToken');
+
+                const [name, email] = await Promise.all([
+                    UserReq.getUserData(setUserName, 'userName'),
+                    UserReq.getUserData(setUserEmail, 'userEmail'),
+                ]);
+
+                //
+
+                
+
+                const nif = await UserReq.getUserData(setuserNIF, 'userNIF');
+
+
+                //
+                
+                const resWorkedHours = await HoursReq.getTecTotalHours(
+                    {setTotalHoursPerson: setHoursPersonPosted, setTotalHoursMach: setHoursMachPosted}, 
+                        nif, token);
+
+                setHoursPersonPosted(resWorkedHours.tec);
+                setHoursMachPosted(resWorkedHours.mach);
+
+            }
+            catch (err) {
+                
+                Toast.show({
+                    type: 'error',
+                    props: { 
+                        title: 'Erro ao puxar dados do técnico',
+                        style: { marginTop: 300 },
+                        darkTheme: theme !== 'light'
+                    }
+                });
+            }
+            finally {
+
+                setIsLoading(false);
+            }
+            
         }
 
-        setDisableState(true);
+        fetchData();
+    }, []);
 
-    }, [name, email, phone]);
 
-    const trySave = () => {
-        const toastParams = {
-            type: 'success',
-            text1: 'Informações atualizadas com sucesso!',
-            text2: 'params.text2'
-        };
 
-        if (true) {
-            showToast(toastParams);
-            return
-        }
-    };
+    //
+
 
     return (
-        <ScrollView style={{ flex: 1 }}>
-            <View style={[styles().container, {backgroundColor: themeColor("secondaryBg")}]}>
-                <TouchableOpacity>
-                    <Image style={styles().userProfilePhoto} source={require('../../assets/image/teste/asukaringa.jpg')} />
-                </TouchableOpacity>
-                <View style={{alignItems: 'center'}}>
-                    <Text style={{ fontSize: 24, color: themeColor("primaryHigh"), fontWeight: '800'}}>Asuka_Strikes</Text>
-                    <Text style={{ fontSize: 16, color: themeColor("grayText")}}>Gerente</Text>
-                </View>
-                <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
-                    <View style={styles().contactInfo}>
-                        <TouchableOpacity>
-                            <Icon color={themeColor("primaryHigh")} name="email-outline" size={30} />
-                        </TouchableOpacity>
-                        <Text style={{ color: themeColor("grayText") }}>doge@host.com</Text>
+        <ScrollView style={{ flex: 1, backgroundColor: themeColor("secondaryBg") }}>
+            <View style={styles().container}>
+                {
+
+                    isLoading
+
+                    ?
+
+                    <View style={{ flex: 1, justifyContent: 'center', height: 350 }}>
+                        <LoadingLogo width={80} height={80} isLoading={true} blockView={false} style={{ position: 'relative' }}/>
                     </View>
-                    <View style={styles().contactInfo}>
-                        <TouchableOpacity>
-                            <Icon color={themeColor("primaryHigh")} name="phone-outline" size={30} />
-                        </TouchableOpacity>
-                        <Text style={{ color: themeColor("grayText") }}>(11) 95555-5555</Text>
-                    </View>
-                </View>
-                <View style={[styles().userInfoContainer, {backgroundColor: themeColor("primaryBg")}]}>
-                    <InputField styleProp={stylesField()} objState={setName} initValue={currentName} 
-                                placeholderTextColor={themeColor("grayText")} maxLength={20} fieldName="Nome" placeholder="Insira seu nome" />
 
-                    <InputField styleProp={stylesField()} objState={setEmail} initValue={currentEmail} 
-                                placeholderTextColor={themeColor("grayText")} maxLength={20} fieldName="Email" placeholder="Insira seu email" />
+                    :
 
-                    <InputField styleProp={stylesField()} objState={setPhone} initValue={currentPhone} 
-                                placeholderTextColor={themeColor("grayText")} maxLength={20} fieldName="Telefone" placeholder="Insira seu telefone" />
+                    <>
+                        <ProfilePic style={styles().userProfilePhoto} />
+                        <View style={{alignItems: 'center'}}>
+                            <TouchableOpacity>
+                                <Text style={{ fontSize: 24, color: themeColor("primaryHigh"), fontWeight: '800'}}>
+                                    {userName.split(' ')[0] + ' ' + userName.split(' ')[1][0] + '.'}
+                                </Text>
+                            </TouchableOpacity>
+                            <Text style={{ fontSize: 16, color: themeColor("grayText")}}>Técnico</Text>
+                        </View>
+                        <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                            {/* <View style={styles().contactInfo}>
+                                <TouchableOpacity>
+                                    <Icon color={themeColor("primaryHigh")} name="email-outline" size={30} />
+                                </TouchableOpacity>
+                                <Text style={{ color: themeColor("grayText") }}>{userEmail}</Text>
+                            </View>
+                            <View style={styles().contactInfo}>
+                                <TouchableOpacity>
+                                    <Icon color={themeColor("primaryHigh")} name="card-account-details-outline" size={30} />
+                                </TouchableOpacity>
+                                <Text style={{ color: themeColor("grayText") }}>{userNIF}</Text>
+                            </View> */}
+                        </View>
+                        <View style={[styles().userInfoContainer, {backgroundColor: themeColor("primaryBg")}]}>
+                            <StatementField styleProp={stylesField()} statement={userName} 
+                                        placeholderTextColor={themeColor("grayText")} statementTitle="Nome" placeholder="..." />
+                            <StatementField static={true} styleProp={stylesField()} statement={userNIF} 
+                                        placeholderTextColor={themeColor("grayText")} statementTitle="NIF" placeholder="..." />
+                            <StatementField styleProp={stylesField()} statement={userEmail} 
+                                        placeholderTextColor={themeColor("grayText")} statementTitle="Email" placeholder="..." />
+                            <StatementField styleProp={stylesField()} statement={hoursPersonPosted} 
+                                        placeholderTextColor={themeColor("grayText")} statementTitle="Horas totais - Pessoa" placeholder="..." />
+                            <StatementField styleProp={stylesField()} statement={hoursMachPosted}
+                                        placeholderTextColor={themeColor("grayText")} statementTitle="Horas totais - Máquina" placeholder="..." />
+                            
+                            
+                            {/* <InputField styleProp={stylesField()} objState={setPhone} initValue={currentPhone} 
+                                        placeholderTextColor={themeColor("grayText")} maxLength={20} fieldName="Telefone" placeholder="Insira seu telefone" /> */}
 
-                    <TouchableOpacity disabled={isBttnDisabled} onPress={trySave} 
-                    style={[styles().bttnSubmit, {backgroundColor: isBttnDisabled ? themeColor("primaryDisabled") : themeColor("primary")}]}>
-                        <Text style={{fontSize: 18, fontWeight: '700', color: 'white'}}>Salvar</Text>
-                    </TouchableOpacity>
-                </View>
+                            {/* <TouchableOpacity disabled={isBttnDisabled} onPress={trySave} 
+                            style={[styles().bttnSubmit, {backgroundColor: isBttnDisabled ? themeColor("primaryDisabled") : themeColor("primary")}]}>
+                                <Text style={{fontSize: 18, fontWeight: '700', color: 'white'}}>Salvar</Text>
+                            </TouchableOpacity> */}
+                        </View>
+                    </>
+                }
             </View>
         </ScrollView>
     );
@@ -108,8 +184,7 @@ const styles = () => {
         container: {
             flex: 1,
             alignItems: 'center',
-            paddingTop: '8%',
-            paddingBottom: '8%',
+            paddingVertical: '4%',
             paddingHorizontal: '6%',
             gap: 14
         },
@@ -122,13 +197,15 @@ const styles = () => {
         contactInfo: {
             flexDirection: 'row',
             alignItems: 'center',
+            // width: '50%',
             gap: 6
         },
         userInfoContainer: {
-            height: '56%',
+            height: '62%',
             width: '100%',
-            paddingVertical: '3%',
+            paddingVertical: '10%',
             paddingHorizontal: '8%',
+            justifyContent: 'center',
             borderRadius: 10,
             backgroundColor: '#F1F5F9', // themeColor("secondaryBg")
         },
@@ -156,9 +233,9 @@ const stylesField = () =>  {
     return StyleSheet.create({
         field: {
             width: 280,
-            height: 60, 
+            // height: 60, 
             gap: 6,
-            marginVertical: 10,
+            marginVertical: 6,
         },
         fieldName: {
             fontSize: 16,
@@ -168,9 +245,10 @@ const stylesField = () =>  {
         },
         input: {
             width: '100%',
-            paddingVertical: 5,
-            paddingHorizontal: 10,
+            paddingVertical: 8,
+            paddingHorizontal: 12,
             borderRadius: 8,
+            fontSize: 16,
             color: themeColor("primaryText"),
             backgroundColor: themeColor("secondaryBg"),
         },

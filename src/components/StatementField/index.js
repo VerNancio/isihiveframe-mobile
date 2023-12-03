@@ -1,4 +1,5 @@
 import { View, Text, TextInput } from "react-native";
+import { ScrollView } from "react-native";
 
 const StatementField = (props) => {
 
@@ -10,7 +11,12 @@ const StatementField = (props) => {
     return (
         <View style={[styles.field, {width: widthField}]}>
             <Text style={styles.fieldName}>{props.statementTitle}</Text>
-            <TextInput editable={false} style={styles.input}>{props.statement}</TextInput>
+            <ScrollView>
+                <TextInput multiline={true} editable={false} style={styles.input}
+                           placeholder={props.placeholder} placeholderTextColor={props.placeholderTextColor} >
+                    {props.statement}
+                </TextInput>
+            </ScrollView>
         </View>
     );
 }
